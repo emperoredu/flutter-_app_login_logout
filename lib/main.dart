@@ -1,7 +1,3 @@
-import 'dart:html';
-import 'dart:js';
-import 'dart:ui';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +115,63 @@ class _NotesViewState extends State<NotesView> {
         ],
         centerTitle: false,
       ),
-      body: const Center(child: Text('DONE')),
+      body: ListView.separated(
+        itemCount: 20,
+        itemBuilder: (context, i) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Card(
+            color: Colors.grey,
+            child: Column(
+              children: [
+                Row(
+                  children: const [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          'https://images.pexels.com/photos/5677314/pexels-photo-5677314.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'),
+                    ),
+                    Text(
+                      ' A Bot',
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                    Text(
+                      "  @iamarealhuman",
+                    )
+                  ],
+                ),
+                const Padding(
+                    child: Text(
+                        '"It might not be a human," "but it acts almost like it would if it were a human.",'),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8)),
+                Row(
+                  children: [
+                    FlatButton(
+                        onPressed: () => ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                                content: Text('Now you follow @ Emperoradu'))),
+                        child: const Text(
+                          'Follow',
+                          style: TextStyle(color: Colors.lightBlueAccent),
+                        )),
+                    FlatButton(
+                        onPressed: () => ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                                content: Text("you can't send messages"))),
+                        child: const Text(
+                          'Send Message',
+                          style: TextStyle(color: Colors.lightBlueAccent),
+                        )),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        separatorBuilder: (contect, i) => i % 1 == 0
+            ? const Divider()
+            : const Padding(
+                padding: EdgeInsets.all(10),
+              ),
+      ),
     );
   }
 }

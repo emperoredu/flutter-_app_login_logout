@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:main/views/Login_views.dart';
+import 'dart:developer' as devtools show log;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({
@@ -34,56 +35,59 @@ class _RegisterViewState extends State<RegisterView> {
       appBar: AppBar(
         title: const Text('Register'),
       ),
-      body: Column(
-        children: [
-          TextField(
-            controller: _email,
-            decoration:
-                const InputDecoration(hintText: 'Enyter your Email here'),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: _password,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration:
-                const InputDecoration(hintText: 'Enter your pass word here'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final email = _email.text;
-              final password = _password.text;
-              // ignore: unused_local_variable
-              try {
-                final userCredential = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: email, password: password);
-                print(userCredential);
-              } on FirebaseException catch (e) {
-                if (e.code == 'network-request-failed') {
-                  print('network request failed');
-                } else if (e.code == 'weak-password') {
-                  print('weak password ');
-                } else if (e.code == 'email-alreday-in-use') {
-                  print('Email already in use');
-                  print(UserCredential);
-                } else if (e.code == 'invalid-email') {
-                  print('invalid email');
+      body: Padding(
+        padding: const EdgeInsets.all(50.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _email,
+              decoration:
+                  const InputDecoration(hintText: 'Enyter your Email here'),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              controller: _password,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              decoration:
+                  const InputDecoration(hintText: 'Enter your pass word here'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final email = _email.text;
+                final password = _password.text;
+                // ignore: unused_local_variable
+                try {
+                  final userCredential = await FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                          email: email, password: password);
+                  devtools.log(userCredential.toString());
+                } on FirebaseException catch (e) {
+                  if (e.code == 'network-request-failed') {
+                    devtools.log('network request failed');
+                  } else if (e.code == 'weak-password') {
+                    devtools.log('weak password ');
+                  } else if (e.code == 'email-alreday-in-use') {
+                    devtools.log('Email already in use');
+                  } else if (e.code == 'invalid-email') {
+                    devtools.log('invalid email');
+                  }
                 }
-              }
-            },
-            child: const Text('Register'),
-          ),
-          Center(
-            child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/login/', (route) => false);
-                },
-                child: const Text('Already registered? Logine here!')),
-          )
-        ],
+              },
+              child: const Text('Register'),
+            ),
+            Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/login/', (route) => false);
+                  },
+                  child: const Text('Already registered? Log ine here!')),
+            )
+          ],
+        ),
       ),
     );
   }
