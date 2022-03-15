@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:main/constants/routes.dart';
 import 'package:main/views/register_view.dart';
 import 'dart:developer' as devtools show log;
 
@@ -63,7 +64,7 @@ class _LoginViewState extends State<LoginView> {
                     password: password,
                   );
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/NotesView/',
+                    noteRoute,
                     (_) => false,
                   );
                 } on FirebaseAuthException catch (e) {
@@ -82,7 +83,7 @@ class _LoginViewState extends State<LoginView> {
                 // ignore: prefer_const_constructors
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/register/', (route) => false);
+                      .pushNamedAndRemoveUntil(registerRoute, (route) => false);
                   // Navigator.push(
                   //     context,
                   //     MaterialPageRoute(
