@@ -182,16 +182,16 @@ Future<bool> showlogoutDialog(BuildContext context) {
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Sing out'),
-          content: const Text('Are you sure u want to sing out?'),
+          title: const Text('log out'),
+          content: const Text('Are you sure u want to logout?'),
           actions: [
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(ctx).pop(true);
               },
               child: const Text('Log out'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(ctx).pop(false);
               },
