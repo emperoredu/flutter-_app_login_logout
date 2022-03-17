@@ -37,6 +37,7 @@ void main() async {
       loginRoute: (context) => const LoginView(),
       registerRoute: (context) => const RegisterView(),
       noteRoute: (context) => const NotesView(),
+      verifyemailRoute: (context) => const VerifyEmailView(),
     },
   ));
 }

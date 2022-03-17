@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:main/constants/routes.dart';
-import 'package:main/views/Login_views.dart';
-import 'dart:developer' as devtools show log;
+
+import '../utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({
@@ -61,20 +61,43 @@ class _RegisterViewState extends State<RegisterView> {
                 final password = _password.text;
                 // ignore: unused_local_variable
                 try {
-                  final userCredential = await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: email, password: password);
-                  devtools.log(userCredential.toString());
+                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email, password: password);
+                  Navigator.of(context).pushNamed(verifyemailRoute);
                 } on FirebaseException catch (e) {
                   if (e.code == 'network-request-failed') {
-                    devtools.log('network request failed');
+                    await showErrorDialog(
+                      context,
+                      'network request failed',
+                    );
                   } else if (e.code == 'weak-password') {
-                    devtools.log('weak password ');
+                    await showErrorDialog(
+                      context,
+                      'Weak password',
+                    );
                   } else if (e.code == 'email-alreday-in-use') {
-                    devtools.log('Email already in use');
+                    await showErrorDialog(
+                      context,
+                      'Eamail already in use',
+                    );
                   } else if (e.code == 'invalid-email') {
-                    devtools.log('invalid email');
+                    await showErrorDialog(
+                      context,
+                      'Invalid email',
+                    );
+                  } else {
+                    // catch other  exception of auth
+                    await showErrorDialog(
+                      context,
+                      'Error: ${e.code}',
+                    );
                   }
+                } catch (e) {
+                  //catches any other exception which not firebase authexception
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
+                  );
                 }
               },
               child: const Text('Register'),
