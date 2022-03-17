@@ -53,50 +53,64 @@ class _LoginViewState extends State<LoginView> {
               autocorrect: false,
               decoration: const InputDecoration(hintText: 'Password'),
             ),
-            TextButton(
-              onPressed: () async {
-                final email = _email.text;
-                final password = _password.text;
-                // ignore: unused_local_variable
-                try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email,
-                    password: password,
-                  );
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    noteRoute,
-                    (_) => false,
-                  );
-                  //firebaseauthentication exception decleared
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == 'user-not-found') {
-                    await showErrorDialog(
-                      context,
-                      'User not found',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  final email = _email.text;
+                  final password = _password.text;
+                  // ignore: unused_local_variable
+                  try {
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      email: email,
+                      password: password,
                     );
-                  } else if (e.code == 'invalid-email') {
-                    await showErrorDialog(
-                      context,
-                      'Invalid email',
-                    );
-                  } else if (e.code == 'wrong-password') {
-                    await showErrorDialog(
-                      context,
-                      'Wrong password',
-                    );
-                    //handle other fireabse authentication exception
-                  } else {
-                    await showErrorDialog(
-                      context,
-                      'Error: ${e.code}',
-                    );
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user?.emailVerified ?? false) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        noteRoute,
+                        (_) => false,
+                      );
+                    } else {
+                      await showErrorDialog(
+                        context,
+                        'Please login to ur email to verify  you account,thank you',
+                      );
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          verifyemailRoute, (route) => false);
+                    }
+
+                    //firebaseauthentication exception decleared
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'user-not-found') {
+                      await showErrorDialog(
+                        context,
+                        'User not found',
+                      );
+                    } else if (e.code == 'invalid-email') {
+                      await showErrorDialog(
+                        context,
+                        'Invalid email',
+                      );
+                    } else if (e.code == 'wrong-password') {
+                      await showErrorDialog(
+                        context,
+                        'Wrong password',
+                      );
+                      //handle other fireabse authentication exception
+                    } else {
+                      await showErrorDialog(
+                        context,
+                        'Error: ${e.code}',
+                      );
+                    }
+                    //any exception that might arrive
+                  } catch (e) {
+                    await showErrorDialog(context, e.toString());
                   }
-                  //any exception that might arrive
-                } catch (e) {
-                  await showErrorDialog(context, e.toString());
-                }
-              },
-              child: const Text('Login'),
+                },
+                child: const Text('Login'),
+              ),
             ),
             TextButton(
                 // ignore: prefer_const_constructors
