@@ -7,8 +7,6 @@ import 'package:main/views/Verify_email.dart';
 import 'package:main/views/noteView.dart';
 import 'package:main/views/register_view.dart';
 
-import 'firebase_options.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
