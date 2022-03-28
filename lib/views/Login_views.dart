@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:main/constants/routes.dart';
+import 'package:main/service/auth/auth_exceptions.dart';
+import 'package:main/service/auth/auth_service.dart';
 
 import '../utilities/show_error_dialog.dart';
 
@@ -61,12 +63,11 @@ class _LoginViewState extends State<LoginView> {
                   final password = _password.text;
                   // ignore: unused_local_variable
                   try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                    final user = FirebaseAuth.instance.currentUser;
-                    if (user?.emailVerified ?? false) {
+                    await AuthService.firebase()
+                        .loging(email: email, password: password);
+
+                    final user = AuthService.firebase().currentUser;
+                    if (user?.isEmailVerified ?? false) {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                         noteRoute,
                         (_) => false,
@@ -77,36 +78,27 @@ class _LoginViewState extends State<LoginView> {
                         'Please login to ur email to verify  you account,thank you',
                       );
                       Navigator.of(context).pushNamedAndRemoveUntil(
-                          verifyemailRoute, (route) => false);
+                        verifyemailRoute,
+                        (route) => false,
+                      );
                     }
 
                     //firebaseauthentication exception decleared
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'user-not-found') {
-                      await showErrorDialog(
-                        context,
-                        'User not found',
-                      );
-                    } else if (e.code == 'invalid-email') {
-                      await showErrorDialog(
-                        context,
-                        'Invalid email',
-                      );
-                    } else if (e.code == 'wrong-password') {
-                      await showErrorDialog(
-                        context,
-                        'Wrong password',
-                      );
-                      //handle other fireabse authentication exception
-                    } else {
-                      await showErrorDialog(
-                        context,
-                        'Error: ${e.code}',
-                      );
-                    }
-                    //any exception that might arrive
-                  } catch (e) {
-                    await showErrorDialog(context, e.toString());
+                  } on UserNotFoundAuthException {
+                    await showErrorDialog(
+                      context,
+                      'User not found',
+                    );
+                  } on WrongPasswordAuthException {
+                    await showErrorDialog(
+                      context,
+                      'Wrong password',
+                    );
+                  } on GenericAuthException {
+                    await showErrorDialog(
+                      context,
+                      'Authentication error',
+                    );
                   }
                 },
                 child: const Text('Login'),
@@ -122,7 +114,9 @@ class _LoginViewState extends State<LoginView> {
                   //     MaterialPageRoute(
                   //         builder: (context) => const RegisterView()));
                 },
-                child: const Text('Not registered yet? Register here'))
+                child: const Text(
+                  'Not registered yet? Register here',
+                ))
           ],
         ),
       ),

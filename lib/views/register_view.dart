@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:main/constants/routes.dart';
+import 'package:main/service/auth/auth_exceptions.dart';
+import 'package:main/service/auth/auth_service.dart';
 
 import '../utilities/show_error_dialog.dart';
 
@@ -63,46 +64,37 @@ class _RegisterViewState extends State<RegisterView> {
                   final password = _password.text;
                   // ignore: unused_local_variable
                   try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    final User = FirebaseAuth.instance.currentUser;
-                    await User?.sendEmailVerification();
+                    await AuthService.firebase().createUser(
+                      email: email,
+                      password: password,
+                    );
+
+                    final User = AuthService.firebase().currentUser;
+                    ;
+                    AuthService.firebase().sendEmailVerificatin();
                     Navigator.of(context).pushNamed(verifyemailRoute);
-                  } on FirebaseException catch (e) {
-                    if (e.code == 'network-request-failed') {
-                      await showErrorDialog(
-                        context,
-                        'network request failed',
-                      );
-                    } else if (e.code == 'weak-password') {
-                      await showErrorDialog(
-                        context,
-                        'Weak password',
-                      );
-                    } else if (e.code == 'email-alreday-in-use') {
-                      await showErrorDialog(
-                        context,
-                        'Eamail already in use',
-                      );
-                    } else if (e.code == 'invalid-email') {
-                      await showErrorDialog(
-                        context,
-                        'Invalid email',
-                      );
-                    } else {
-                      // catch other  exception of auth
-                      await showErrorDialog(
-                        context,
-                        'Error: ${e.code}',
-                      );
-                    }
-                  } catch (e) {
-                    //catches any other exception which not firebase authexception
+                  } on InvalidEmailAuthException {
+                    await showErrorDialog(context, 'Invalid email');
+                  } on NetworkReuestFailAuthException {
                     await showErrorDialog(
                       context,
-                      e.toString(),
+                      'network request failed',
                     );
+                  } on EmailAlreadyInUseAuthException {
+                    await showErrorDialog(
+                      context,
+                      'Eamail already in use',
+                    );
+                  } on WeakPasswordAuthException {
+                    await showErrorDialog(
+                      context,
+                      'Weak password',
+                    );
+                  } on GenericAuthException {
+                    await showErrorDialog(context, 'Authentication Error');
                   }
+
+                  //catches any other exception which not firebase authexception
                 },
                 child: const Text('Register'),
               ),
