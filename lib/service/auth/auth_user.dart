@@ -7,5 +7,5 @@ class AuthUser {
 
   const AuthUser(this.isEmailVerified);
   //copyng firebase user to this class AuthUser
-  factory AuthUser.fromFirebase(User user) => AuthUser(user.emailVerified);
+  factory AuthUser.fromFirebase(user) => AuthUser(user.emailVerified);
 }
