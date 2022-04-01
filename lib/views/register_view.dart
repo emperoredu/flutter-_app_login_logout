@@ -25,6 +25,7 @@ class _RegisterViewState extends State<RegisterView> {
     super.initState();
   }
 
+  @override
   void dispose() {
     _email.dispose();
     _password.dispose();
@@ -69,9 +70,10 @@ class _RegisterViewState extends State<RegisterView> {
                       password: password,
                     );
 
-                    final User = AuthService.firebase().currentUser;
-                    ;
+                    // AuthService.firebase().currentUser;
+
                     AuthService.firebase().sendEmailVerificatin();
+
                     Navigator.of(context).pushNamed(verifyemailRoute);
                   } on InvalidEmailAuthException {
                     await showErrorDialog(context, 'Invalid email');
@@ -83,7 +85,7 @@ class _RegisterViewState extends State<RegisterView> {
                   } on EmailAlreadyInUseAuthException {
                     await showErrorDialog(
                       context,
-                      'Eamail already in use',
+                      'Email already in use',
                     );
                   } on WeakPasswordAuthException {
                     await showErrorDialog(

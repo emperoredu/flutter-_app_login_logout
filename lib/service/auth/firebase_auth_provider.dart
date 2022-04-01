@@ -1,14 +1,16 @@
 // ignore: file_names
+import 'package:firebase_auth/firebase_auth.dart%20'
+    show FirebaseAuth, FirebaseAuthException;
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:main/firebase_options.dart';
 import 'package:main/service/auth/auth_user.dart';
 import 'package:main/service/auth/auth_provider.dart';
 import 'package:main/service/auth/auth_exceptions.dart';
+
 //importing firebase
 
-import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException;
-
-import '../../firebase_options.dart';
+//import '../../firebase_options.dart';
 
 class FirebaseAuthProvider implements AuthProvider {
   @override
@@ -62,7 +64,6 @@ class FirebaseAuthProvider implements AuthProvider {
     } else {
       throw UserNotLoggedInAuthException();
     }
-    throw UnimplementedError();
   }
 
   @override

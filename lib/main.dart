@@ -7,13 +7,13 @@ import 'package:main/views/Verify_email.dart';
 import 'package:main/views/noteView.dart';
 import 'package:main/views/register_view.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MaterialApp(
     title: 'Flutter Demo',
     theme: ThemeData(
-      primarySwatch: Colors.blue,
+      primarySwatch: Colors.red,
     ),
     debugShowCheckedModeBanner: false,
     home: const Homepage(),
@@ -37,6 +37,7 @@ class Homepage extends StatelessWidget {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             // // ignore: non_constant_identifier_names
+            // ignore: non_constant_identifier_names
             final User = AuthService.firebase().currentUser;
             if (User != null) {
               if (User.isEmailVerified) {
